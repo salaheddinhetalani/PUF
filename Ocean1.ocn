@@ -1,0 +1,19 @@
+val=0 
+time_scale=1u 
+time_start=0.5 
+ 
+out = outfile("~/SHDA3/Task1/res-40C.dat" "a") ; name the output file and store in working directory 
+ 
+for(val 1 30 
+openResults( sprintf( nil "~/SHDA3/Task1/PUF/Sim/Arbitor_PUF/Arbitur_16/ade9/results/data/MonteCarlo.2/%d/A16Test-40C/psf" val)) 
+results()                                   ; open up the results 
+selectResults(`tran)                        ; Select the transient results 
+outputs()                                   ; View the outputs 
+ 
+for(time_inc 1 32 
+time=(time_inc-time_start)*time_scale 
+if((value(v("/Out"),time)>1.65) fprintf(out "1") fprintf(out "0"))
+)
+fprintf(out "\n")
+)
+close(out) 

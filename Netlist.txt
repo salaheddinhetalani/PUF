@@ -1,0 +1,109 @@
+// Generated for: spectre
+// Generated on: Dec 10 17:58:00 2017
+// Design library name: Arbitor_PUF
+// Design cell name: Arbitur_16
+// Design view name: schematic
+simulator lang=spectre
+global 0 vdd!
+include "/opt/cad/designkits/ams/v410/spectre/c35/soac.scs"
+include "/opt/cad/designkits/ams/v410/spectre/c35/processOption.scs"
+include "/opt/cad/designkits/ams/v410/spectre/c35/cmos53.scs" section=cmosmc
+include "/opt/cad/designkits/ams/v410/spectre/c35/res.scs" section=resmc
+include "/opt/cad/designkits/ams/v410/spectre/c35/cap.scs" section=capmc
+include "/opt/cad/designkits/ams/v410/spectre/c35/bip.scs" section=bipmc
+include "/opt/cad/designkits/ams/v410/spectre/c35/ind.scs" section=indmc
+include "/opt/cad/designkits/ams/v410/spectre/c35/esddiode.scs" section=esddiodemc
+
+vec_include "/home/sh9n17/SHDA3/Task1/SwitchCompStimulis.vec" 
+
+// Library name: GATES
+// Cell name: inv_core
+// View name: schematic
+subckt inv_core in out inh_gnd inh_vdd
+parameters GT_MN1W=0.35u GT_MN1L=0.35u sx=8.5e-07 lc=5e-07 GT_MP1W=0.35u GT_MP1L=0.35u
+    MN1 (out in inh_gnd inh_gnd) modn w=GT_MN1W l=GT_MN1L as=sx*(GT_MN1W) ad=sx*(GT_MN1W) ps=2*sx+(GT_MN1W) pd=2*sx+(GT_MN1W) nrd=lc/(GT_MN1W) nrs=lc/(GT_MN1W) ng=1
+    MP1 (out in inh_vdd inh_vdd) modp w=GT_MP1W l=GT_MP1L as=sx*(GT_MP1W) ad=sx*(GT_MP1W) ps=2*sx+(GT_MP1W) pd=2*sx+(GT_MP1W) nrd=lc/(GT_MP1W) nrs=lc/(GT_MP1W) ng=1
+ends inv_core
+// End of subcircuit definition.
+
+// Library name: Arbitor_PUF
+// Cell name: 2to1Mux
+// View name: schematic
+subckt Arbitor_PUF_2to1Mux_schematic O i0 i1 s inh_gnd inh_vdd
+    MN1 (net010 s net19 net017) modn w=4u l=0.35u as=3.4e-12 ad=3.4e-12 ps=5.7u pd=5.7u nrd=0.125 nrs=0.125 ng=1
+    MN0 (net010 net16 net18 net018) modn w=4u l=0.35u as=3.4e-12 ad=3.4e-12 ps=5.7u pd=5.7u nrd=0.125 nrs=0.125 ng=1
+    MP1 (net010 net16 net19 net016) modp w=12u l=0.35u as=1.02e-11 ad=1.02e-11 ps=13.7u pd=13.7u nrd=0.04166667 nrs=0.04166667 ng=1
+    MP0 (net010 s net18 net012) modp w=12u l=0.35u as=1.02e-11 ad=1.02e-11 ps=13.7u pd=13.7u nrd=0.04166667 nrs=0.04166667 ng=1
+    I41 (s net16 inh_gnd inh_vdd) inv_core GT_MN1W=0.35u GT_MN1L=0.35u sx=8.5e-07 lc=5e-07 GT_MP1W=0.35u GT_MP1L=0.35u
+    I40 (net010 O inh_gnd inh_vdd) inv_core GT_MN1W=0.35u GT_MN1L=0.35u sx=8.5e-07 lc=5e-07 GT_MP1W=0.35u GT_MP1L=0.35u
+    I39 (i1 net19 inh_gnd inh_vdd) inv_core GT_MN1W=0.35u GT_MN1L=0.35u sx=8.5e-07 lc=5e-07 GT_MP1W=0.35u GT_MP1L=0.35u
+    I38 (i0 net18 inh_gnd inh_vdd) inv_core GT_MN1W=0.35u GT_MN1L=0.35u sx=8.5e-07 lc=5e-07 GT_MP1W=0.35u GT_MP1L=0.35u
+    R3 (net017 0) resistor r=10
+    R2 (net018 0) resistor r=10
+    R1 (vdd! net012) resistor r=10
+    R0 (vdd! net016) resistor r=10
+ends Arbitor_PUF_2to1Mux_schematic
+// End of subcircuit definition.
+
+// Library name: Arbitor_PUF
+// Cell name: Switch_comp
+// View name: schematic
+subckt Switch_comp Cn Obot Otop ibot itop inh_gnd inh_vdd
+    I5 (Obot ibot itop Cn inh_gnd inh_vdd) Arbitor_PUF_2to1Mux_schematic
+    I4 (Otop itop ibot Cn inh_gnd inh_vdd) Arbitor_PUF_2to1Mux_schematic
+ends Switch_comp
+// End of subcircuit definition.
+
+// Library name: GATES
+// Cell name: nand2
+// View name: schematic
+subckt nand2 a b out inh_gnd inh_vdd
+parameters GT_PDW GT_PDL=0.35u sx=1.1e-06 lc=6e-07 GT_PUW GT_PUL=0.35u
+    MN1 (out a net13 inh_gnd) modn w=GT_PDW l=GT_PDL as=sx*(GT_PDW) ad=sx*(GT_PDW) ps=2*sx+(GT_PDW) pd=2*sx+(GT_PDW) nrd=lc/(GT_PDW) nrs=lc/(GT_PDW) ng=1
+    MN2 (net13 b inh_gnd inh_gnd) modn w=GT_PDW l=GT_PDL as=sx*(GT_PDW) ad=sx*(GT_PDW) ps=2*sx+(GT_PDW) pd=2*sx+(GT_PDW) nrd=lc/(GT_PDW) nrs=lc/(GT_PDW) ng=1
+    MP1 (out a inh_vdd inh_vdd) modp w=GT_PUW l=GT_PUL as=sx*(GT_PUW) ad=sx*(GT_PUW) ps=2*sx+(GT_PUW) pd=2*sx+(GT_PUW) nrd=lc/(GT_PUW) nrs=lc/(GT_PUW) ng=1
+    MP2 (out b inh_vdd inh_vdd) modp w=GT_PUW l=GT_PUL as=sx*(GT_PUW) ad=sx*(GT_PUW) ps=2*sx+(GT_PUW) pd=2*sx+(GT_PUW) nrd=lc/(GT_PUW) nrs=lc/(GT_PUW) ng=1
+ends nand2
+// End of subcircuit definition.
+
+// Library name: Arbitor_PUF
+// Cell name: SR_nand
+// View name: schematic
+subckt SR_nand Q Q\' R S inh_gnd inh_vdd
+    I1 (Q R Q\' inh_gnd inh_vdd) nand2 GT_PDW=4u GT_PDL=0.35u sx=1.1e-06 lc=6e-07 GT_PUW=12u GT_PUL=0.35u
+    I0 (S Q\' Q inh_gnd inh_vdd) nand2 GT_PDW=4u GT_PDL=0.35u sx=1.1e-06 lc=6e-07 GT_PUW=12u GT_PUL=0.35u
+ends SR_nand
+// End of subcircuit definition.
+
+// Library name: Arbitor_PUF
+// Cell name: Arbitur_16
+// View name: schematic
+I15 (C15 Reset Set net68 net69 0 vdd!) Switch_comp
+I14 (C14 net68 net69 net66 net67 0 vdd!) Switch_comp
+I13 (C13 net66 net67 net64 net65 0 vdd!) Switch_comp
+I12 (C12 net64 net65 net62 net63 0 vdd!) Switch_comp
+I11 (C11 net62 net63 net61 net60 0 vdd!) Switch_comp
+I10 (C10 net61 net60 net58 net59 0 vdd!) Switch_comp
+I9 (C9 net58 net59 net57 net56 0 vdd!) Switch_comp
+I8 (C8 net57 net56 net50 net55 0 vdd!) Switch_comp
+I7 (C7 net50 net55 net51 net54 0 vdd!) Switch_comp
+I6 (C6 net51 net54 net52 net53 0 vdd!) Switch_comp
+I5 (C5 net52 net53 net48 net49 0 vdd!) Switch_comp
+I4 (C4 net48 net49 net46 net47 0 vdd!) Switch_comp
+I3 (C3 net46 net47 net44 net45 0 vdd!) Switch_comp
+I2 (C2 net44 net45 net42 net43 0 vdd!) Switch_comp
+I1 (C1 net42 net43 net40 net41 0 vdd!) Switch_comp
+I0 (C0 net40 net41 in in 0 vdd!) Switch_comp
+I16 (Out Q\'Out Reset Set 0 vdd!) SR_nand
+include "./_graphical_stimuli.scs"
+simulatorOptions options reltol=100e-6 vabstol=1e-6 iabstol=1e-12 \
+    temp=25.0 tnom=27 homotopy=all limit=delta scalem=1.0 scale=1.0 \
+    compatible=spice2 gmin=1e-12 rforce=1 maxnotes=5 maxwarns=5 digits=5 \
+    cols=80 pivrel=1e-3 sensfile="../psf/sens.output" checklimitdest=psf \
+    enable_pre_ver=yes ignorezerovar=yes colonasdelimiter=none 
+tran tran stop=32u errpreset=conservative write="spectre.ic" \
+    writefinal="spectre.fc" annotate=status maxiters=5 
+finalTimeOP info what=oppoint where=rawfile
+modelParameter info what=models where=rawfile
+save in C0 C1 Set Reset Out 
+saveOptions options save=selected
