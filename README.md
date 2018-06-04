@@ -1,5 +1,5 @@
 # PUF
-Design and Evaluation of an arbiter-delay-based Physically Unclonable Function (Hardware Security Assignment)
+Design and Evaluation of an arbiter-delay-based Physically Unclonable Function (Secure Hardware Design Assignment)
 
 ## Overall Objective
 Build and simulate an Arbiter-PUF using CADENCE and evaluate its quality metrics namely uniqueness and reliability.
